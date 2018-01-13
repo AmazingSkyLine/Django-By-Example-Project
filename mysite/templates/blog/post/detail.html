@@ -1,0 +1,51 @@
+{% extends "blog/post/base.html" %}
+{% load blog_tags %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p class="date">
+        Published {{ post.publish }} by {{ post.author }}
+    </p>
+    {{ post.body|markdown }}
+    <p>
+        <a href="{% url 'blog:post_share' post.id %}">
+            分享
+        </a>
+    </p>
+    <h2>相似文章</h2>
+    {% for post in similar_posts %}
+        <p>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </p>
+    {% empty %}
+        没有相似文章.
+    {% endfor %}
+    <!--comments模型管理类，具有父类Manager的一些方法-->
+    {% with comments.count as total_comments %}  <!--将comments.count()赋给total_comments-->
+    <h2>
+        {{ total_comments }} 评论
+    </h2>
+    {% endwith %}
+    {% for comment in comments %}
+    <div class="comment">
+        <p class="info">
+            评论 {{ forloop.counter }} by {{ comment.name }}  <!--forloop.counter循环计数-->
+            {{ comment.created }}
+        </p>
+        {{ comment.body|linebreaks }}  <!--linebreaks转换换行为html的换行符-->
+    </div>
+    {% empty %}  <!--如果评论为空，显示内容-->
+    <p>现在还没有评论呢</p>
+    {% endfor %}
+    {% if new_comment %}
+        <h2>评论发表成功</h2>
+    {% else %}
+        <h2>添加新评论</h2>
+        <form action="." method="post">
+            {{ comment_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="发表"></p>
+        </form>
+    {% endif %}
+{% endblock %}
