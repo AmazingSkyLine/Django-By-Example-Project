@@ -1,0 +1,77 @@
+{% extends "account/base.html" %}
+{% block title %}{{ image.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ image.title }}</h1>
+    <!--![]表示图片,同<img>标签-->
+    {% load thumbnail %}
+    {% thumbnail image.image "300" as im %}
+    <a href="{{ image.image.url }}"><img src="{{ im.url }}" alt="{{ image.title }}"></a>
+    {% endthumbnail %}
+    {% with total_likes=image.user_like.count user_like=image.user_like.all %}
+        <div class="image-info">
+            <div>
+                <span class="count">
+                    <span class="total">{{ total_likes }}</span>
+                    like{{ total_likes|pluralize }}
+                </span>
+                <a href="#" data-id="{{ image.id }}" data-action="{% if request.user in user_like %}un{% endif %}like" class="like button">
+                    {% if request.user not in user_like %}
+                        Like
+                    {% else %}
+                        Unlike
+                    {% endif %}
+                </a>
+            </div>
+            {{ image.description|linebreaks }}  <!--允许换行-->
+        </div>
+        <div class="image-likes">
+            {% for user in user_like %}
+             <div>
+                 <img src="{{ user.profile.photo.url }}" alt="{{ user.firstname }}">
+                 <p>{{ user.first_name }}</p>
+             </div>
+            {% empty %}
+                Nobody likes this image yet.
+            {% endfor %}
+        </div>
+    {% endwith %}
+{% endblock %}
+
+{% block domready %}
+    $('a.like').click(function(e){
+	e.preventDefault();
+	$.post('{% url "images:like" %}',
+	{
+		id: $(this).data('id'),
+		action: $(this).data('action')
+	},
+	function(data){
+		if(data['status'] == 'ok')
+		{
+			var previous_action = $('a.like').data('action');
+			$('a.like').data('action', previous_action === 'like'?'unlike':'like');
+			$('a.like').text(previous_action === 'like'?'Unlike':'Like');
+			var previous_likes = parseInt($('span.count .total').text());
+			$('span.count .total').text(previous_action === 'like'?previous_likes+1:previous_likes-1);
+            if(previous_action === 'like') {
+                var selector = $('.image-likes');
+                selector.text('');
+                selector.append(`<div>
+                 <img src="{{ user.profile.photo.url }}" alt="{{ user.firstname }}">
+                 <p>{{ user.first_name }}</p>
+             </div>`);
+            }
+            else if(previous_action === 'unlike') {
+                var selector = $('.image-likes img[src="{{ user.profile.photo.url }}"]').parent() || null;
+                if(selector) {
+                    selector.remove();
+                }
+                if(!$('.image-likes').children()[0]) {
+                    $('.image-likes').text('Nobody likes this image yet.');
+                }
+            }
+		}
+	});
+});
+{% endblock %}
