@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+
 from django.urls import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['mysite.com', '127.0.0.1']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles', 
+    'django.contrib.staticfiles',
     'social_django',
     'images',
     'sorl.thumbnail',
@@ -76,7 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bookmarks.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -84,13 +82,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bookmarks',
-        'USER': 'www-data', 
-        'PASSWORD': 'xm19971215', 
-        'HOST': 'localhost', 
+        'USER': 'www-data',
+        'PASSWORD': 'xm19971215',
+        'HOST': 'localhost',
         'PORT': '3306'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -110,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -124,13 +120,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 # 后台显示email内容
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -140,17 +135,17 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 AUTHENTICATION_BACKENDS = (
-   'django.contrib.auth.backends.ModelBackend',
-   'account.authentication.EmailAuthBackend',
-   'social_core.backends.weibo.WeiboOAuth2',
-   'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authentication.EmailAuthBackend',
+    'social_core.backends.weibo.WeiboOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
 )
 
 SOCIAL_AUTH_WEIBO_KEY = '3905325202'
 SOCIAL_AUTH_WEIBO_SECRET = '798304a5c0f0cbd1bbfeb5ff444093e2'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1088889503926-9t5b4t4f8k1hd3i66east5u0pcb6qn99.apps.googleusercontent.com' # Google Consumer Key
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'e-4K8IidTR17b9NQvCQoZaVV' # Google Consumer Secret
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1088889503926-9t5b4t4f8k1hd3i66east5u0pcb6qn99.apps.googleusercontent.com'  # Google Consumer Key
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'e-4K8IidTR17b9NQvCQoZaVV'  # Google Consumer Secret
 
 # reverse_lazy() 使用名字动态构建url
 LOGIN_REDIRECT_URL = reverse_lazy('dashboard')  # 若用户登录前没有尝试访问其他url,则登录后默认重定向至dashboard页面
@@ -162,3 +157,7 @@ ABSOLUTE_URL_OVERRIDES = {
 }
 
 
+# redis配置
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0

@@ -1,7 +1,9 @@
-from django.contrib.contenttypes.models import ContentType
-from .models import Action
-from django.utils import timezone
 import datetime
+
+from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+
+from .models import Action
 
 
 # 创建用户动作对象的快捷方法

@@ -1,13 +1,14 @@
-from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import models
+
 
 # Create your models here.
 
 
 class Profile(models.Model):
     # profile与user一一对应
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)   # 这里并没有直接调用auth的User模型
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)  # 这里并没有直接调用auth的User模型
     date_of_birth = models.DateField(blank=True, null=True)  # 允许不填或为无
     photo = models.ImageField(upload_to='users/%Y/%m/%d', blank=True)
 
@@ -22,10 +23,11 @@ class Contact(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:
-        ordering = ('-created', )
+        ordering = ('-created',)
 
     def __str__(self):
         return '{} follows {}'.format(self.user_from, self.user_to)
+
 
 # 动态地给User模型添加字段
 User.add_to_class('following',

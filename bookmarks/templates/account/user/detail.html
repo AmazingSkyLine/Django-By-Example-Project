@@ -14,6 +14,7 @@
 	<span class="total">{{ total_followers }}</span>
 	follower{{ total_followers|pluralize }}
 </span>
+{% if request.user != user %}
 <a href="#" data-id="{{ user.id }}" data-action="{% if request.user in user.followers.all %}un{% endif %}follow" class="follow button">
 	{% if request.user not in user.followers.all %}
 		Follow
@@ -21,6 +22,7 @@
 		Unfollow
 	{% endif %}
 </a>
+{% endif %}
 <div id="image-list" class="image-container">
 	{% include "images/image/list_ajax.html" with images=user.images_created.all %}
 </div>
