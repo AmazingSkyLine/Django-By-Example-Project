@@ -15,6 +15,7 @@ DELETE: 删除资源
 ```
 
 由于做的时候有点智障，请求是用json传参数的，而不是key-value对，有点麻烦。
+
 API文档地址：http://showdoc.fenlan96.com/index.php?s=/8
 
 **参考资料**
