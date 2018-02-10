@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if article_id %}编辑{% else %}创建新文章{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="row" style="width:500px; margin: 0 auto;">
+        <h1>{% if article_id %}编辑{% else %}创建新文章{% endif %}</h1>
+        <form action="{% if article_id %}{% url 'article_edit' article_id %}{% else %}.{% endif %}" class="form-group"
+              method="post">
+            {{ form.media }}
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="submit" class="btn btn-default" value="{% if article_id %}确定{% else %}创建{% endif %}"
+                   style="margin: 0 0 0 428px">
+        </form>
+    </div>
+{% endblock %}

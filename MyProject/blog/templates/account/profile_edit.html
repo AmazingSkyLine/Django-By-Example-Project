@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}个人资料{% endblock %}
+
+{% block content %}
+<div class="col">
+    <div class="jumbotron col-md-8 col-md-offset-2">
+    <a href="{% url 'password_change' %}" style="float: right; margin-top: 5px;">修改密码?</a>
+    <form action="{% url 'profile_edit' %}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            {% csrf_token %}
+            <button class="btn btn-default col-md-2 col-md-offset-10">
+                <span class="glyphicon glyphicon-ok"></span>
+            </button>
+        </div>
+    </form>
+    </div>
+    {% if request.user.profile.image %}
+    <div class="col-md-2 hidden user-image">
+        <div class="thumbnail">
+            <img src="{{ request.user.profile.image.url }}" class="img-responsive">
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block domready %}
+$('input[name=cute_name]').addClass('form-control').val('{{ request.user.profile.cute_name }}');
+var tmp = '{{ request.user.profile.description }}';
+var tmp = tmp!=='None'? tmp: '';
+$('textarea').addClass('form-control').attr('rows', 3).val(tmp)
+$('input[name=email]').addClass('form-control').val('{{ request.user.email }}');
+
+$('input[name=image]').hover(function(){
+	$('.user-image').removeClass('hidden').fadeIn();
+}, function(){
+	$('.user-image').addClass('hidden').fadeOut();
+})
+{% endblock %}

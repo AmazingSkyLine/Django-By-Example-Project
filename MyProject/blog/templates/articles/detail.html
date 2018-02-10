@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load static %}
+{% load article_tags %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    <div class="article">
+    <div class="article-header">
+        <h1>{{ article.title }}</h1>
+        <span>
+            标签：
+            {% for tag in article.tags.all %}
+                <a class="label label-primary" href="{% url 'article_list_by_tag' tag.id %}">{{ tag }}</a>
+            {% endfor %}
+        </span>
+        <p class="article-info">作者：{{ article.author.profile.cute_name }} {{ article.publish }}</p>
+    </div>
+    {% if request.user == article.author %}
+        <div style="float: right; padding: 10px 15px;">
+            <a href="{% url 'article_edit' article.id %}" class="glyphicon glyphicon-edit">编辑</a>
+            <a href="{% url 'article_delete' article.id %}" class="glyphicon glyphicon-remove">删除</a>
+        </div>
+    {% endif %}
+    <div class="article-content">
+        {{ article.content|safe }}
+    </div>
+    </div>
+    <hr>
+    {% if article_rank %}
+        <div class="container-fluid">
+            <div class="row">
+                <h3>评论最多的文章</h3>
+                {% for art in article_rank %}
+                    <div class="col-md-4 well" style="height:150px;">
+                        <h4><a href="{% url 'article_detail' art.id %}">{{ art.title }} </a>
+                            <small><a href="{% url 'user_profile' art.author.id %}">{{ art.author }}</a></small>
+                        </h4>
+                        {% for tag in art.tags.all %}
+                            <a class="label label-success" href="{% url 'article_list_by_tag' tag.id %}">{{ tag }}</a>
+                        {% endfor %}
+                        <p style="text-indent: 2em; padding-top: 5px;">{{ art.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <hr>
+
+    <div class="comments container-fluid">
+        <h3>评论<span class="badge">{{ total_comments }}</span></h3>
+        {% for comment in comments %}
+                <div class="comment">
+                    <img class="comment-img img-responsive" src="{{ comment.owner.profile.image.url }}">
+                    <h4 class="comment-info"><a
+                            href="{% url 'user_profile' comment.owner.id %}">{{ comment.owner.profile.cute_name }}</a>
+                        <small>{{ comment.updated }} </small>
+                        {% if comment.owner == request.user %}
+                        <a class="comment-edit"><span class="glyphicon glyphicon-edit"></span></a>
+                        {% endif %}
+                    </h4>
+                    <div style="text-indent: 2em"><p id="comment">{{ comment.content|markdown }}</p></div>
+                </div>
+                    <form class="form-group hidden comment-input" action="{% url 'comment_edit' comment.id %}"
+                          method="get">
+                        <textarea class="form-control" rows="6" name="content">{{ comment.content }}</textarea>
+                        <button class="btn btn-default glyphicon glyphicon-ok col-md-2 col-md-offset-10" type="submit"
+                                id="btn-comment"></button>
+                    </form>
+        {% empty %}
+            <p class="text-center">现在还没有评论哦</p>
+        {% endfor %}
+        <hr>
+        <h3>发表评论</h3>
+        <form class="form-group text-center" action="{% url 'comment_create' article.id %}" method="get">
+            <textarea class="form-control" rows="6" name="new_content" style="margin-bottom: 10px;">{{ comment.content }}</textarea>
+            <button class="btn btn-default glyphicon glyphicon-ok col-md-2 col-md-offset-10" type="submit"></button>
+        </form>
+    </div>
+    <div class="placeBox" style="height: 80px;"></div>
+<style>
+    .article {
+        background: #FFEBEE;
+        border-radius: 5px;
+    }
+
+    .article-header {
+        height: 90px;
+        padding: 0 10px;
+        margin: 0 auto;
+        text-align: center;
+        border-bottom: 1px solid #EF9A9A;
+    }
+
+    .article-header h1 {
+        margin: 0;
+        padding: 5px;
+        color: #4FC3F7;
+    }
+
+    .article-header span {
+        color: #666;
+    }
+
+    .article-header a {
+        vertical-align: text-top;
+    }
+
+    .article-info {
+        color: #9D9D9D;
+    }
+
+    .article-content{
+        clear: both;
+        font-size: 20px;
+        min-height: 500px;
+        color: #9C27B0;
+        padding: 5px 20px;
+        text-indent: 2em;
+    }
+
+    .comment{
+        border-radius: 5px;
+        box-shadow: 2px 2px 10px #4FC3F7;
+        width: 88%;
+        height: 200px;
+        background: #B3E5FC;
+        margin-left: 110px;
+        margin-bottom: 25px;
+    }
+    .comment-img{
+        float: left;
+        width: 100px;
+        margin-left: -110px;
+    }
+    .comment-info{
+        top: 0;
+        left: 0;
+        padding: 10px;
+    }
+
+</style>
+{% endblock %}
+
+{% block domready %}
+
+    $('img').addClass('img-responsive');
+
+    $('.comment-edit').click(function(){
+    $(this).hide();
+    $(this).parent().parent().next().removeClass('hidden');
+    $(this).parent().parent().hide();
+    });
+
+    $('#btn-comment').click(function(){
+    $(this).parent().addClass('hidden');
+    $(this).parent().prev().show();
+    $(this).parent().prev().prev().children('a').show();
+    });
+{% endblock %}
