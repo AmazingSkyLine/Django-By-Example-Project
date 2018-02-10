@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST, require_http_methods
+from django.views.decorators.http import require_POST
 
 from account.forms import UserCreatForm
 from account.models import Profile
@@ -79,7 +79,6 @@ def api_list(request):
     return JsonResponse(d)
 
 
-@require_http_methods(['GET'])
 def api_detail(request):
     try:
         data = json.loads(request.body)
@@ -91,9 +90,7 @@ def api_detail(request):
     return JsonResponse(data)
 
 
-@require_POST
 @login_required
-@csrf_exempt
 def api_create(request):
     try:
         data = json.loads(request.body)
@@ -114,9 +111,7 @@ def api_create(request):
     return JsonResponse(data)
 
 
-@require_http_methods(['PATCH'])
 @login_required
-@csrf_exempt
 def api_edit(request):
     try:
         cd = json.loads(request.body)
@@ -145,8 +140,6 @@ def api_edit(request):
 
 
 @login_required
-@csrf_exempt
-@require_http_methods(['DELETE'])
 def api_delete(request):
     cd = json.loads(request.body)
     try:
